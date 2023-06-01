@@ -27,7 +27,7 @@ Mosdns config and auto update shell script.
   ```sh
   #!/bin/bash
 
-  mosdnsDir="/volume1/docker/mosdns"         # mosdns dir
+  mosdnsDir="/root/mosdns/mosdns"         # mosdns dir
   # create tmp directory
   mkdir -p ${mosdnsDir}/tmp
   echo "########################### start download files ###########################"
@@ -64,10 +64,10 @@ Mosdns config and auto update shell script.
   Add config as follow:
   
   ```sh
-  30 1    * * *   root    /volume1/docker/mosdns/bin/updator.sh
+  30 1    * * *   root    /root/mosdns/mosdns/bin/updator.sh
   ```
 
-  The config will auto execute `/volume1/docker/mosdns/bin/updator.sh` as root role at 1:30 (local time) daily.
+  The config will auto execute `/root/mosdns/mosdns/bin/updator.sh` as root role at 1:30 (local time) daily.
 
 ## V5 Config
 
@@ -102,7 +102,7 @@ Mosdns config and auto update shell script.
   ```sh
   #!/bin/bash
 
-  mosdnsDir="/volume1/docker/mosdns"        # mosdns dir
+  mosdnsDir="/root/mosdns/mosdns"        # mosdns dir
   # create tmp directory
   mkdir -p ${mosdnsDir}/tmp
   echo "########################### start download files ###########################"
@@ -138,7 +138,7 @@ Mosdns config and auto update shell script.
   Add config as follow:
   
   ```sh
-  30 1    * * *   root    /volume1/docker/mosdns/bin/updator.sh
+  30 1    * * *   root    /root/mosdns/mosdns/bin/updator.sh
   ```
 
-  The config will auto execute `/volume1/docker/mosdns/bin/updator.sh` as root role at 1:30 (local time) daily.
+  The config will auto execute `/root/mosdns/mosdns/bin/updator.sh` as root role at 1:30 (local time) daily.
