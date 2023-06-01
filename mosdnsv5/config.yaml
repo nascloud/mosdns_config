@@ -65,6 +65,12 @@ plugins:
         - ./online_rules/apple_cn.txt
         - ./online_rules/google_cn.txt
 
+  - tag: cn_ip
+    type: ip_set
+    args:
+      files:
+        - ./online_rules/geoip_cn.txt
+
   - tag: not_cn_domain
     type: domain_set
     args:
@@ -82,36 +88,44 @@ plugins:
   - tag: forward_local
     type: forward
     args:
-      concurrent: 2
       upstreams:
-        - tag: ali
-          # addr: https://dns.alidns.com/dns-query
-          addr: https://223.5.5.5/dns-query
-          # dial_addr: 223.5.5.5
-        - tag: DNSPod
-          # addr: https://doh.pub/dns-query
-          addr: https://120.53.53.53/dns-query
-          # dial_addr: 120.53.53.53
+        - tag: mosdns
+          addr: 192.168.50.250
 
   - tag: forward_remote
     type: forward
     args:
-      concurrent: 2
       upstreams:
-        - tag: google
-          # addr: https://dns.google/dns-query
-          addr: https://8.8.8.8/dns-query
-          # dial_addr: 8.8.8.8
-        - tag: cloudflare
-          # addr: https://cloudflare-dns.com/dns-query
-          addr: https://1.1.1.1/dns-query
-          # dial_addr: 1.1.1.1
+        - tag: clash
+          addr: 192.168.50.25
+
+  - tag: "ttl_sequence"
+    type: sequence
+    args:
+      - exec: ttl 1
+      - exec: accept
+
+  - tag: "local_sequence"
+    type: sequence
+    args:
+      - exec: query_summary forward_local
+      - exec: $forward_local
+      - matches: "!resp_ip $cn_ip"
+        exec: goto remote_sequence
+      - exec: goto ttl_sequence
+
+  - tag: "remote_sequence"
+    type: sequence
+    args:
+      - exec: query_summary forward_remote
+      - exec: $forward_remote
+      - exec: goto ttl_sequence
 
   - tag: fallback_query
     type: fallback
     args:
-      primary: forward_local # 主可执行插件的 tag
-      secondary: forward_remote # 副可执行插件的 tag
+      primary: local_sequence # 主可执行插件的 tag
+      secondary: remote_sequence # 副可执行插件的 tag
       threshold: 500 # 无响应回滚阈值。单位毫秒。默认 500 。
       always_standby: true # 副可执行插件始终待命。
 
@@ -134,7 +148,7 @@ plugins:
           - qtype 12 # PTR
         exec: reject 0 # DNS-Rcode
 
-      # - exec: prefer_ipv4
+      - exec: prefer_ipv4
 
       - matches:
           - '!qname $ddns_domain'
@@ -166,10 +180,6 @@ plugins:
       - matches:
           - has_resp
         exec: accept
-
-      - matches:
-          - qname $block_domain $ads_domain
-        exec: reject 3 # 执行 直接返回 NXDOMAIN(3) 屏蔽。
 
       - matches:
           - qname $cn_domain

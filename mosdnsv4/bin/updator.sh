@@ -1,6 +1,6 @@
 #!/bin/bash
 
-mosdnsDir="/volume1/docker/mosdns"
+mosdnsDir="/root/docker/mosdns"
 # create tmp directory
 mkdir -p ${mosdnsDir}/tmp
 echo "########################### start download files ###########################"
