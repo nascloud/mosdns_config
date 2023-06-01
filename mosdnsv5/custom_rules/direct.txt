@@ -2,3 +2,11 @@ keyword:qq.com
 domain:qq.com
 keyword:adobe
 domain:adobe.com
+domain:whoami.ds.akahelp.net
+domain:msftncsi.com
+domain:msftconnecttest.com
+domain:03k.org
+domain:cloudfront.net
+domain:zazs.tk
+domain:nscloud.tk
+domain:cloudflare.com
