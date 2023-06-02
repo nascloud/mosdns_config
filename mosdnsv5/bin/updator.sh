@@ -1,6 +1,6 @@
 #!/bin/bash
 
-mosdnsDir="/root/mosdns/mosdns"
+mosdnsDir="/root/mosdns/mosdns"        # mosdns dir
 # create tmp directory
 mkdir -p ${mosdnsDir}/tmp
 echo "########################### start download files ###########################"
@@ -11,8 +11,11 @@ for filename in $fileList; do
   echo -e "\n downloading ${newFilename}.txt ... \n"
   curl -C - --retry 10 https://raw.githubusercontent.com/Loyalsoldier/v2ray-rules-dat/release/${filename}.txt >>${mosdnsDir}/tmp/${newFilename}.txt
 done
+echo -e "\n downloading geoip_cn.txt ... \n"
+curl -C - --retry 10 https://raw.githubusercontent.com/Loyalsoldier/geoip/release/text/cn.txt >>${mosdnsDir}/tmp/geoip_cn.txt
 echo "########################### all files download successfully! ###########################"
 # move all tmp directory files to rules directory
+mkdir -p ${mosdnsDir}/online_rules
 mv -f ${mosdnsDir}/tmp/* ${mosdnsDir}/online_rules
 # force delete tmp directory
 rm -rf ${mosdnsDir}/tmp
