@@ -99,13 +99,20 @@ plugins:
         - tag: clash
           addr: 192.168.50.25
 
-  - tag: "ttl_sequence"
+  - tag: ttl_sequence
     type: sequence
     args:
       - exec: ttl 1
       - exec: accept
 
-  - tag: "local_sequence"
+  - tag: remote_sequence
+    type: sequence
+    args:
+      - exec: query_summary forward_remote
+      - exec: $forward_remote
+      - exec: goto ttl_sequence
+
+  - tag: local_sequence
     type: sequence
     args:
       - exec: query_summary forward_local
@@ -114,12 +121,6 @@ plugins:
         exec: goto remote_sequence
       - exec: goto ttl_sequence
 
-  - tag: "remote_sequence"
-    type: sequence
-    args:
-      - exec: query_summary forward_remote
-      - exec: $forward_remote
-      - exec: goto ttl_sequence
 
   - tag: fallback_query
     type: fallback
